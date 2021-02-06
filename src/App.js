@@ -65,8 +65,11 @@ useEffect(() => {
       // hier den object erstellen und auf die array hinzufügen, status automatisch 'not attending' (oder 'false'?) aber wie gehe ich rum mit der liste aus localhost 5000?!
       guestList.push(guest);
     }
-    function deleteGuest(guest) {}
-    // hier die array durchlaufen und nach passenden namen suchen, und wenn gefunden, entfernen
+    function deleteGuest(guest) {
+      const index = guestList.findIndex();
+      let deleted = guestList.splice(index, 1);
+    }
+    // hier die array durchlaufen und nach passenden namen suchen, und wenn gefunden, entfernen; ist findIndex das richtige und wie gebe ich die object da rein
 
     return (
       <div>
@@ -81,7 +84,7 @@ useEffect(() => {
           <button value={guestStatus} onChange={handleGuestStatus}>
             Attending
           </button>
-          {/* oder sollte es ein checkbox sein und on click den status ändern?1 */}
+          {/* oder sollte es ein checkbox sein und onClick den status ändern?! */}
           <button onClick={deleteGuest}>Delete guest</button>
         </div>
       </div>
