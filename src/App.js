@@ -1,95 +1,96 @@
 import './App.css';
 import React from 'react';
 import { useEffect, useState } from 'react';
+const axios = require('axios').default;
 
-const baseUrl = 'http://localhost:5000';
+function App() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [guestStatus, setGuestStatus] = useState('not attending');
+  const [{ guest }, setGuest] = useState('');
+  const [[guestList], setGuestList] = useState('');
 
-const response = await fetch(`${baseUrl}/`);
-const allGuests = await response.json(); // aus gitHub documentation "to get all guests"
-
-const response = await fetch(`${baseUrl}/`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ firstName: 'Karl', lastName: 'Horky' }),
-});
-const createdGuest = await response.json(); // aus gitHub documentation "creating a new guest"
-
-const response = await fetch(`${baseUrl}/1`, {
-  method: 'PATCH',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ attending: true }),
-});
-const updatedGuest = await response.json(); // aus gitHub documentation "updating a guest"
-
-const response = await fetch(`${baseUrl}/1`, { method: 'DELETE' });
-const deletedGuest = await response.json(); // aus gitHub documentation "deleting a guest"
-
-useEffect(() => {
-  async function fetchData() {
-    const response = await fetch('http://localhost:5000');
-    const data = await response.json();
-    console.log(data);
-    createGuest(data);
+  function handleFirstName(event) {
+    setFirstName(event.target.value);
   }
 
-  fetchData();
-  // }, []); KEINE AHNUNG!!!! Muss ich mehrmals useEffect machen, oder wozu sind da so viele ähnliche zeilen auf die dokumentation?!
+  function handleLastName(event) {
+    setLastName(event.target.value);
+  }
 
-  function App() {
-    const [firstName, setFirstName] = useState();
-    const [lastName, setLastName] = useState();
-    const [guestStatus, setGuestStatus] = useState('not attending');
+  // axios goes to localhost 5000 and gets what is in there and setState puts that data into guests array
+  function getGuests() {
+    axios
+      .get('http://localhost:5000/')
+      .then((response) => setGuestList({ guest: response.data }))
+      .catch((errorResponse) => console.log(errorResponse));
+  }
 
-    let guest = { firstName, lastName, guestStatus };
-    let guestList = []; // aber die liste sollte ja durch localhost 5000 kommen, muss ich da noch was createn oder wohin speichere ich die guests?
+  // calls the backend ('localhost') to create a new guest using the first- and last name that have just been entered
+  // after that, sets the state back to empty fields to signal the user that they can enter new data
+  function handleSubmit(event) {
+    event.preventDefault();
 
-    function handleFirstName(event) {
-      setFirstName(event.target.value);
-    }
+    axios
+      .post('http://localhost:5000/', {
+        firstName: setFirstName,
+        lastName: setLastName,
+      })
+      .then(() => setGuest({ firstName: '', lastName: '' }))
+      .catch((errorResponse) => console.log(errorResponse));
+  }
 
-    function handleLastName(event) {
-      setLastName(event.target.value);
-    }
+  // called after first render; can be used to set up the component,
+  // e.g., by reading data from an API - which we do with this.getGuests()
+  // BUT here isn't render() so where does this belong to?
+  function componentDidMount() {
+    this.getGuests();
+  }
+  // axios sends changed status of attending to localhost 5000, id targeted at the end so that it knows which object to update
+  function handleAttending(event) {
+    const { id, checked } = event.target;
 
-    function handleGuestStatus(event) {
-      setGuestStatus(event.target.value);
-      // hier musste ich es aus 'not attending' zum 'attending' austauschen oder ist status doch am anfang false und hier dann wird es true gewechselt?! wie geht es mit einem checkbox
-    }
+    axios
+      .patch(`http://localhost:5000/${id}`, {
+        attending: checked,
+      })
+      .then(() => this.getGuests());
+  }
 
-    function createGuest() {
-      guest = ({ firstName }, { lastName }, { guestStatus });
-      // hier den object erstellen und auf die array hinzufügen, status automatisch 'not attending' (oder 'false'?) aber wie gehe ich rum mit der liste aus localhost 5000?!
-      guestList.push(guest);
-    }
-    function deleteGuest(guest) {
-      const index = guestList.findIndex();
-      let deleted = guestList.splice(index, 1);
-    }
-    // hier die array durchlaufen und nach passenden namen suchen, und wenn gefunden, entfernen; ist findIndex das richtige und wie gebe ich die object da rein
+  // axios tells localhost 5000 to delete id-targeted guest
+  // when done, read the updated list of guests from the server
+  function handleClick(event) {
+    const { id } = event.target;
 
-    return (
+    axios.delete(`http://localhost:5000/${id}`).then(() => getGuests());
+  }
+
+  return (
+    <div>
+      <h1>Guest List Manager</h1>
       <div>
+        <p>First Name</p>
+        <input type="text" value={firstName} onChange={handleFirstName} />
+        <p>Last Name</p>
+        <input type="text" value={lastName} onChange={handleLastName} />
+        <br />
+        <input type="submit" value="Add guest" onClick={handleSubmit} />
+        <br />
         <h1>Guest List</h1>
-        <div>
-          <p>First Name</p>
-          <input type="text" value={firstName} onChange={handleFirstName} />
-          <p>Last Name</p>
-          <input type="text" value={lastName} onChange={handleLastName} />
-          <button onClick={createGuest}>Add to guest list</button>
-
-          <button value={guestStatus} onChange={handleGuestStatus}>
-            Attending
-          </button>
-          {/* oder sollte es ein checkbox sein und onClick den status ändern?! */}
-          <button onClick={deleteGuest}>Delete guest</button>
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Attending</th>
+              <th>Remove guest</th>
+            </tr>
+          </thead>
+          {/* <tbody>{guestList.map({ guest })}</tbody> ok this doesn't work*/}
+        </table>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  export default App;
-});
+export default App;
