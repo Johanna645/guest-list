@@ -89,33 +89,6 @@ function App() {
       .then(() => emptyFields());
   }
 
-  // function to show the inhalt of a guest object in a table row
-  function getTableRow() {
-    const guest = { guestID, firstName, lastName, guestStatus };
-
-    return (
-      <tr key={guestID}>
-        <td>{firstName}</td>
-        <td>{lastName}</td>
-        <td>
-          <input
-            type="checkbox"
-            id={guestID}
-            checked={guestStatus}
-            onChange={handleAttending}
-          />
-        </td>
-        <td>
-          <input
-            type="button"
-            id={guestID}
-            // onClick={handleClick}
-            value="Remove"
-          />
-        </td>
-      </tr>
-    );
-  }
 
   // // axios tells localhost 5000 to delete id-targeted guest
   // // when done, read the updated list of guests from the server

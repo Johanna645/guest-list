@@ -1,16 +1,38 @@
-function createGuest() {
-    guest = ({ firstName }, { lastName }, { guestStatus });
-    // hier den object erstellen und auf die array hinzufügen, status automatisch 'not attending' (oder 'false'?) aber wie gehe ich rum mit der liste aus localhost 5000?!
-    guestList.push(guest);
-    console.log(guestList);
+
+/* function getTableRow(guest) {
+    return (
+      <tr key={guestID}>
+        <td>{firstName}</td>
+        <td>{lastName}</td>
+        <td>
+          <input
+            type="checkbox"
+            id={guestID}
+            checked={attending}
+            onChange={(event) => {
+              setAttending(event.currentTarget.checked);
+            }}
+          />
+        </td>
+        <td>
+          <input
+            type="button"
+            id={guestID}
+            onClick={handleClickToRemove}
+            value="Remove"
+          />
+        </td>
+      </tr>
+    );
+  } */
+
+  handleGuest(guest) {
+    console.log('App.js reports', guest);
+    this.guests.push(guest);
   }
 
-
-
-  function handleGuestStatus(event) {
-    setGuestStatus(event.target.value);
-    // hier musste ich es aus 'not attending' zum 'attending' austauschen oder ist status doch am anfang false und hier dann wird es true gewechselt?! wie geht es mit einem checkbox
-  }
+<div><GuestManager onCreateGuest={handleGuest} /></div>
+      <div><GuestList guests={this.guests} /></div>
 
 
 const baseUrl = 'http://localhost:5000';

@@ -1,0 +1,96 @@
+import React from 'react';
+import { useEffect, useState } from 'react';
+
+export default function GuestList() {
+  const [guestList, setGuestList] = useState([]);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [attending, setAttending] = useState('false');
+  const [guestID, setGuestID] = useState('0'); // or is this stupid now, how can i add the id to the guest otherwise
+
+  // to get all guests
+  useEffect(() => {
+    const getGuests = async () => {
+      const response = await fetch('http://localhost:5000');
+      const allGuests = await response.json();
+      setGuestList(allGuests);
+    };
+    getGuests();
+  }, []);
+
+  // componentDidMount = getGuests;
+
+  function handleAttending(event) {
+    const { guestID } = event.target;
+    function updateGuestStatus() {
+      async function update() {
+        const response = await fetch('http://localhost:5000', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ attending: true }),
+        });
+        const updatedGuest = await response.json();
+      }
+      update();
+    }
+  }
+}
+
+function handleClickToRemove(event) {
+  const { guestID } = event.target;
+  function removeGuest() {
+    async function remove() {
+      const response = await fetch(`http://localhost:5000/${guestID}`, {
+        method: 'DELETE',
+      });
+      const removedGuest = await response.json();
+    }
+    removeGuest();
+  }
+
+  function getTableRow() {
+    return (
+      <tr key={guestID}>
+        <td>{firstName}</td>
+        <td>{lastName}</td>
+        <td>
+          <input
+            type="checkbox"
+            id={guestID}
+            checked={attending}
+            onChange={(event) => {
+              setAttending(event.currentTarget.checked);
+            }}
+          />
+        </td>
+        <td>
+          <input
+            type="button"
+            id={guestID}
+            onClick={handleClickToRemove}
+            value="Remove"
+          />
+        </td>
+      </tr>
+    );
+  }
+
+  return (
+    <div>
+      <h1>Guest List</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Attending</th>
+            <th>Remove guest</th>
+          </tr>
+        </thead>
+        <tbody>{guestList.map(getTableRow())}</tbody>
+      </table>
+    </div>
+  );
+}
