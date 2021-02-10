@@ -5,9 +5,11 @@ import { useEffect, useState } from 'react';
 function App() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [attending, setAttending] = useState('false');
+  const [attending, setAttending] = useState(false);
   const [guestList, setGuestList] = useState([]);
-  const [guestID, setGuestID] = useState('0');
+  const [guestID, setGuestID] = useState('');
+
+  const baseUrl = 'http://localhost:5000';
 
   function handleFirstName(event) {
     setFirstName(event.target.value);
@@ -20,38 +22,35 @@ function App() {
   // get list from localhost
   useEffect(() => {
     const getGuests = async () => {
-      const response = await fetch('http://localhost:5000');
+      const response = await fetch(`${baseUrl}/`);
       const data = await response.json();
+      console.log('data: ', data);
       setGuestList(data);
     };
     getGuests();
   }, []);
   console.log(guestList);
 
-  function handleSubmit() {
+  async function handleSubmit() {
     // e.preventDefault();
-
     // create new guest
-    async function createGuest() {
-      const response = await fetch('http://localhost:5000', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName: firstName,
-          lastName: lastName,
-        }),
-      });
+    const response = await fetch(`${baseUrl}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+      }),
+    });
 
-      const createdGuest = await response.json();
-    }
+    const createdGuest = await response.json();
+    console.log('createdGuest: ', createdGuest);
 
-    createGuest();
-    console.log(createGuest);
+    // console.log(createGuest);
   }
-
-  // function addCreatedGuest() {}
+  /*
   function editGuest() {
     const lastID = guestList.slice(-1)[0].guestID;
     const nextID = lastID + 1;
@@ -61,39 +60,39 @@ function App() {
       id: { guestID },
       firstName: { firstName },
       lastName: { lastName },
-      attending: { attending },
+      // attending: { attending },
     };
 
     const newGuestList = [...guestList, newGuest];
     setGuestList(newGuestList);
   }
+*/
   // componentDidMount = getGuests;
 
-  /* function handleAttending(event) {
-      function updateGuestStatus() {
-        async function update() {
-          const response = await fetch(`http://localhost:5000'${guestID}`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ attending: true }),
-          });
-          const updatedGuest = await response.json();
-        }
-        update();
-      }
-    } */
-
-  function handleClickToRemove() {
-    async function removeGuest() {
-      const response = await fetch(`http://localhost:5000/${guestID}`, {
-        method: 'DELETE',
+  function handleAttending() {
+    async function update() {
+      const response = await fetch(`${baseUrl}/${guestID}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ attending: true }),
       });
-      const removedGuest = await response.json();
-      console.log(removedGuest);
+      const updatedGuest = await response.json();
     }
-    removeGuest();
+    update();
+  }
+
+  async function handleClickToRemove(id) {
+    console.log('id: ', id);
+    const response = await fetch(`${baseUrl}/${id}`, {
+      method: 'DELETE',
+    });
+    const removedGuest = await response.json();
+
+    guestList.filter(removedGuest);
+    console.lot(guestList);
+    console.log(removedGuest);
   }
 
   return (
@@ -102,7 +101,7 @@ function App() {
       <div>
         <div>
           <h2>Guest List Manager</h2>
-          <form onSubmit={handleSubmit}>
+          <form /* onSubmit={handleSubmit} */>
             <div>
               First name
               <br />
@@ -127,7 +126,7 @@ function App() {
               <input
                 type="submit"
                 value="Create guest"
-                onClick={handleSubmit()}
+                onClick={handleSubmit}
               />
             </div>
           </form>
@@ -146,28 +145,31 @@ function App() {
           </thead>
           <tbody>
             {guestList.map((item) => (
-              <tr key={item.guestID}>
+              <tr key={item.id}>
                 <td>{item.firstName}</td>
                 <td>{item.lastName}</td>
                 <td>
                   <input
                     type="checkbox"
-                    id={guestID}
-                    onChange={(event) => {
+                    id={item.id}
+                    // onClick={handleAttending}
+                    onChange
+                    {...(event) => {
                       setAttending(event.currentTarget.checked);
                     }}
                     checked={attending}
                   />
                 </td>
-                <td>{`${item.attending}`}</td>
+                <td></td>
                 <td>
                   <input
                     type="button"
-                    id={guestID}
-                    onClick={handleClickToRemove}
+                    id={item.id}
+                    onClick={() => handleClickToRemove(item.id)}
                     value="Remove"
                   />
                 </td>
+                {/* onClick={handleClickToRemove(guestID)} test to replace this with */}
               </tr>
             ))}
           </tbody>
