@@ -149,7 +149,7 @@ function App() {
                     checked={guest.attending}
                   />
                 </td>
-                <td></td>
+
                 <td>
                   <input
                     type="button"
