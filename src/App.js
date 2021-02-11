@@ -45,7 +45,7 @@ function App() {
     });
 
     const createdGuest = await response.json();
-    // console.log('createdGuest: ', createdGuest);
+
     const newGuestList = [...guestList, createdGuest];
     setGuestList(newGuestList);
 
@@ -72,11 +72,6 @@ function App() {
     });
 
     setGuestList(newGuestList);
-
-    // const index = guestList.indexOf(updatedGuest);
-    // setAttending(guestList[index]);
-
-    // find which type is updatedGuest  (=boolean) and find which structure guestList have,(= array) setGuestList with a new guest list
   }
 
   async function handleClickToRemove(id) {
@@ -90,7 +85,7 @@ function App() {
       return guest.id !== removedGuest.id;
     });
 
-    setGuestList(newGuestList); // works, but shows correctly only after refreshing the site
+    setGuestList(newGuestList);
 
     console.log(guestList);
     console.log(removedGuest);
@@ -148,14 +143,10 @@ function App() {
                   <input
                     type="checkbox"
                     id={guest.id}
-                    /* onClick={() => handleAttending(item.id)} // works and shows it correct after refresh on the localhost5000 BUT only first time clicking, "unclicking" does not work */
-
                     onChange={() => {
                       handleAttending(guest.id, guest.attending);
                     }}
                     checked={guest.attending}
-                    /* does not work, doesn't react to click */
-                    // {attending === false ? 'off' : 'on'}
                   />
                 </td>
                 <td></td>
