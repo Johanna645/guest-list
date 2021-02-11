@@ -5,9 +5,7 @@ import { useEffect, useState } from 'react';
 function App() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [attending, setAttending] = useState(false);
   const [guestList, setGuestList] = useState([]);
-  const [guestID, setGuestID] = useState('');
 
   const baseUrl = 'http://localhost:5000';
 
@@ -42,45 +40,43 @@ function App() {
       body: JSON.stringify({
         firstName: firstName,
         lastName: lastName,
+        attending: false,
       }),
     });
 
     const createdGuest = await response.json();
-    console.log('createdGuest: ', createdGuest);
-
-    // console.log(createGuest);
-  }
-  /*
-  function editGuest() {
-    const lastID = guestList.slice(-1)[0].guestID;
-    const nextID = lastID + 1;
-    setGuestID(nextID);
-
-    const newGuest = {
-      id: { guestID },
-      firstName: { firstName },
-      lastName: { lastName },
-      // attending: { attending },
-    };
-
-    const newGuestList = [...guestList, newGuest];
+    // console.log('createdGuest: ', createdGuest);
+    const newGuestList = [...guestList, createdGuest];
     setGuestList(newGuestList);
-  }
-*/
-  // componentDidMount = getGuests;
 
-  function handleAttending() {
-    async function update() {
-      const response = await fetch(`${baseUrl}/${guestID}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ attending: true }),
-      });
-      const updatedGuest = await response.json();
-    }
-    update();
+    setFirstName('');
+    setLastName('');
+  }
+
+  async function handleAttending(id, attending) {
+    const response = await fetch(`${baseUrl}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ attending: attending ? false : true }),
+    });
+    const updatedGuest = await response.json();
+    console.log(updatedGuest);
+
+    const newGuestList = guestList.map(function (guest) {
+      if (guest.id === updatedGuest.id) {
+        guest.attending = updatedGuest.attending;
+      }
+      return guest;
+    });
+
+    setGuestList(newGuestList);
+
+    // const index = guestList.indexOf(updatedGuest);
+    // setAttending(guestList[index]);
+
+    // find which type is updatedGuest  (=boolean) and find which structure guestList have,(= array) setGuestList with a new guest list
   }
 
   async function handleClickToRemove(id) {
@@ -90,8 +86,13 @@ function App() {
     });
     const removedGuest = await response.json();
 
-    guestList.filter(removedGuest);
-    console.lot(guestList);
+    const newGuestList = guestList.filter(function (guest) {
+      return guest.id !== removedGuest.id;
+    });
+
+    setGuestList(newGuestList); // works, but shows correctly only after refreshing the site
+
+    console.log(guestList);
     console.log(removedGuest);
   }
 
@@ -101,35 +102,30 @@ function App() {
       <div>
         <div>
           <h2>Guest List Manager</h2>
-          <form /* onSubmit={handleSubmit} */>
-            <div>
-              First name
-              <br />
-              <input
-                type="text"
-                name="firstName"
-                value={firstName}
-                onChange={handleFirstName}
-              />
-            </div>
-            <div>
-              Last name
-              <br />
-              <input
-                type="text"
-                name="lastName"
-                value={lastName}
-                onChange={handleLastName}
-              />
-            </div>
-            <div>
-              <input
-                type="submit"
-                value="Create guest"
-                onClick={handleSubmit}
-              />
-            </div>
-          </form>
+
+          <div>
+            First name
+            <br />
+            <input
+              type="text"
+              name="firstName"
+              value={firstName}
+              onChange={handleFirstName}
+            />
+          </div>
+          <div>
+            Last name
+            <br />
+            <input
+              type="text"
+              name="lastName"
+              value={lastName}
+              onChange={handleLastName}
+            />
+          </div>
+          <div>
+            <input type="submit" value="Create guest" onClick={handleSubmit} />
+          </div>
         </div>
       </div>
       <div>
@@ -144,32 +140,33 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {guestList.map((item) => (
-              <tr key={item.id}>
-                <td>{item.firstName}</td>
-                <td>{item.lastName}</td>
+            {guestList.map((guest) => (
+              <tr key={guest.id}>
+                <td>{guest.firstName}</td>
+                <td>{guest.lastName}</td>
                 <td>
                   <input
                     type="checkbox"
-                    id={item.id}
-                    // onClick={handleAttending}
-                    onChange
-                    {...(event) => {
-                      setAttending(event.currentTarget.checked);
+                    id={guest.id}
+                    /* onClick={() => handleAttending(item.id)} // works and shows it correct after refresh on the localhost5000 BUT only first time clicking, "unclicking" does not work */
+
+                    onChange={() => {
+                      handleAttending(guest.id, guest.attending);
                     }}
-                    checked={attending}
+                    checked={guest.attending}
+                    /* does not work, doesn't react to click */
+                    // {attending === false ? 'off' : 'on'}
                   />
                 </td>
                 <td></td>
                 <td>
                   <input
                     type="button"
-                    id={item.id}
-                    onClick={() => handleClickToRemove(item.id)}
+                    id={guest.id}
+                    onClick={() => handleClickToRemove(guest.id)}
                     value="Remove"
                   />
                 </td>
-                {/* onClick={handleClickToRemove(guestID)} test to replace this with */}
               </tr>
             ))}
           </tbody>
