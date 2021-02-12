@@ -1,6 +1,7 @@
 import './App.css';
 import React from 'react';
 import { useEffect, useState } from 'react';
+import trashcan from './picture/trashcan.jpg';
 
 function App() {
   const [firstName, setFirstName] = useState('');
@@ -93,75 +94,94 @@ function App() {
 
   return (
     <div>
-      <h1>Hello!</h1>
+      <header className="App-header">
+        <h2>
+          The first rule of <strong>Fight Club</strong> is:
+          <br />
+          You do not talk about <strong>Fight Club</strong>.
+          <br />
+          The second rule of <strong>Fight Club</strong> is:
+          <br />
+          You do not talk about <strong>Fight Club</strong>.
+        </h2>
+      </header>
+
       <div>
-        <div>
-          <h2>Guest List Manager</h2>
+        <section className="App-column">
+          <div>
+            <h2>Guest List Manager</h2>
+
+            <div>
+              First name
+              <br />
+              <input
+                type="text"
+                name="firstName"
+                value={firstName}
+                onChange={handleFirstName}
+              />
+            </div>
+            <div>
+              Last name
+              <br />
+              <input
+                type="text"
+                name="lastName"
+                value={lastName}
+                onChange={handleLastName}
+              />
+            </div>
+            <div>
+              <br />
+              <input type="submit" value="Add guest" onClick={handleSubmit} />
+            </div>
+          </div>
 
           <div>
-            First name
-            <br />
-            <input
-              type="text"
-              name="firstName"
-              value={firstName}
-              onChange={handleFirstName}
-            />
-          </div>
-          <div>
-            Last name
-            <br />
-            <input
-              type="text"
-              name="lastName"
-              value={lastName}
-              onChange={handleLastName}
-            />
-          </div>
-          <div>
-            <input type="submit" value="Create guest" onClick={handleSubmit} />
-          </div>
-        </div>
-      </div>
-      <div>
-        <h1>Guest List</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>First name</th>
-              <th>Last name</th>
-              <th>Attending</th>
-              <th>Remove guest</th>
-            </tr>
-          </thead>
-          <tbody>
-            {guestList.map((guest) => (
-              <tr key={guest.id}>
-                <td>{guest.firstName}</td>
-                <td>{guest.lastName}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    id={guest.id}
-                    onChange={() => {
-                      handleAttending(guest.id, guest.attending);
-                    }}
-                    checked={guest.attending}
-                  />
-                </td>
+            <h1>Guest List</h1>
+            <table className="App-table">
+              <thead>
+                <tr>
+                  <th>First name</th>
+                  <th>Last name</th>
+                  <th>Attending</th>
+                  <th>Trash guest</th>
+                </tr>
+              </thead>
+              <tbody>
+                {guestList.map((guest) => (
+                  <tr key={guest.id}>
+                    <td>{guest.firstName}</td>
+                    <td>{guest.lastName}</td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        id={guest.id}
+                        onChange={() => {
+                          handleAttending(guest.id, guest.attending);
+                        }}
+                        checked={guest.attending}
+                      />
+                    </td>
 
-                <td>
-                  <input
-                    type="button"
-                    id={guest.id}
-                    onClick={() => handleClickToRemove(guest.id)}
-                    value="Remove"
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    <td>
+                      <input
+                        type="image"
+                        name="input-image"
+                        src={trashcan}
+                        alt="trashcan"
+                        width="30"
+                        id={guest.id}
+                        onClick={() => handleClickToRemove(guest.id)}
+                        value="Remove"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </div>
   );
