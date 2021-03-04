@@ -23,15 +23,13 @@ function App() {
     const getGuests = async () => {
       const response = await fetch(`${baseUrl}/`);
       const data = await response.json();
-      console.log('data: ', data);
+
       setGuestList(data);
     };
     getGuests();
   }, []);
-  console.log(guestList);
 
   async function handleSubmit() {
-    // e.preventDefault();
     // create new guest
     const response = await fetch(`${baseUrl}/`, {
       method: 'POST',
@@ -63,7 +61,6 @@ function App() {
       body: JSON.stringify({ attending: attending ? false : true }),
     });
     const updatedGuest = await response.json();
-    console.log(updatedGuest);
 
     const newGuestList = guestList.map(function (guest) {
       if (guest.id === updatedGuest.id) {
@@ -76,7 +73,6 @@ function App() {
   }
 
   async function handleClickToRemove(id) {
-    console.log('id: ', id);
     const response = await fetch(`${baseUrl}/${id}`, {
       method: 'DELETE',
     });
@@ -87,9 +83,6 @@ function App() {
     });
 
     setGuestList(newGuestList);
-
-    console.log(guestList);
-    console.log(removedGuest);
   }
 
   return (
@@ -133,7 +126,9 @@ function App() {
             </div>
             <div>
               <br />
-              <input type="submit" value="Add guest" onClick={handleSubmit} />
+              <button type="submit" value="Add guest" onClick={handleSubmit}>
+                Add guest
+              </button>
             </div>
           </div>
 
@@ -154,7 +149,7 @@ function App() {
                     <td>{guest.firstName}</td>
                     <td>{guest.lastName}</td>
                     <td>
-                      <input
+                      <button
                         type="checkbox"
                         id={guest.id}
                         onChange={() => {
@@ -165,7 +160,7 @@ function App() {
                     </td>
 
                     <td>
-                      <input
+                      <button
                         type="image"
                         name="input-image"
                         src={trashcan}
