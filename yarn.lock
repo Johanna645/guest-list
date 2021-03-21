@@ -1619,6 +1619,13 @@
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^7.28.1"
 
+"@testing-library/user-event@*":
+  version "13.0.6"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.0.6.tgz#06ace823532775251b864212b6b1405c9c46c06d"
+  integrity sha512-61Rv1/9pr7rCilwnQ+uLdiaCBFSQp2GRmF2PHrX6gIy0mWqnR43p5pMJAdMA7PZ3JUN+8YyN5S2d1fq9DyYnYw==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+
 "@testing-library/user-event@^12.1.10":
   version "12.6.3"
   resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.6.3.tgz"
@@ -1835,6 +1842,13 @@
   integrity sha512-ggn3ws+yRbOHog9GxnXiEZ/35Mow6YtPZpd7Z5mKDeZS/o7zx3yAle0ov/wjhVB5QT4N2Dt+GNoGCdqkBGCajQ==
   dependencies:
     "@types/jest" "*"
+
+"@types/testing-library__user-event@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@types/testing-library__user-event/-/testing-library__user-event-4.2.0.tgz#b6a4e997f529e38e7ea766dfaeae107a421759ef"
+  integrity sha512-vHuDMJY+UooghUtgFX+OucrhQWLLNUwgSOyvVkHNr+5gYag3a7xVkWNF0hyZID/+qHNw87wFqM/5uagFZ5eQIg==
+  dependencies:
+    "@testing-library/user-event" "*"
 
 "@types/uglify-js@*":
   version "3.11.1"
@@ -2054,10 +2068,10 @@
     "@typescript-eslint/types" "4.15.1"
     eslint-visitor-keys "^2.0.0"
 
-"@upleveled/eslint-config-upleveled@1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@upleveled/eslint-config-upleveled/-/eslint-config-upleveled-1.7.2.tgz#3dd2e4336d9d5d1ab2baf619125e70abf9930dbb"
-  integrity sha512-IywarLb/0Z56FKUkwZr6yGLJuvuNv3lWkj769yS8j0IK/rXkOkmLg+r/rbLzwtsur8o4jqtNQV6FJfSDjhiMAg==
+"@upleveled/eslint-config-upleveled@1.8.1":
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/@upleveled/eslint-config-upleveled/-/eslint-config-upleveled-1.8.1.tgz#e85a7a0b2520f1e4428881ac52c5120e8ea91da0"
+  integrity sha512-QEYnc0bCqZ0m98p6MkPddNI+17ICl3Z8YWQYOyXFTyeGSqDCbf4L4ldG7Xb2mJgnqquNfskky99mFVMYMAEoDw==
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
